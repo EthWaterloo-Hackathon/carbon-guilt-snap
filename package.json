@@ -19,6 +19,7 @@
       "url": "http://localhost:8081/dist/bundle.js"
     },
     "initialPermissions": {
+      "metamask_addToken": {},
       "metamask_getPluginState": {},
       "metamask_getTxById": {},
       "metamask_tx:status-update": {},

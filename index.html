@@ -76,6 +76,19 @@
         alert('Problem happened: ' + err.message || err)
       }
     }
+    async function addToken () {
+      try {
+        const response = await ethereum.send({
+          method: snapId,
+          params: [{
+            method: 'addToken'
+          }]
+        })
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
   </script>
 
 </html>

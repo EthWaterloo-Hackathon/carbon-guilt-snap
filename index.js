@@ -25,6 +25,10 @@ wallet.onMetaMaskEvent("tx:status-update", (id, status) => {
   }
 });
 
+function tokenAddress() {
+  return;
+}
+
 async function reduceAccumulatedGas(amount) {
   const currentPluginState = wallet.getPluginState();
   const accomulatedGas =
@@ -40,6 +44,13 @@ async function reduceAccumulatedGas(amount) {
 wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
   switch (requestObject.method) {
     case "isPluginConnected":
+      return true;
+    case "addToken":
+      await wallet.addToken(
+        "0xd6E105778Aa74aC4CB5D6241a0D161e03d7a2dE7",
+        "GIFT",
+        18
+      );
       return true;
     case "getAccumulatedGas":
       return wallet.getPluginState().accomulatedGas;

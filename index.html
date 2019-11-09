@@ -3,11 +3,11 @@
 <html>
 
   </head>
-    <title>Submitted Tx Hashes Snap Example</title>
+    <title>Carbon Guilt Snap</title>
   </head>
 
   <body>
-    <h1>Submitted Tx Hashes Snap Example!</h1>
+    <h1>Carbon Guilt Snap!</h1>
     <details>
       <summary>Instructions</summary>
       <ul>
@@ -35,10 +35,10 @@
     const snapId = `wallet_plugin_${snapUrl}`
     const connectButton = document.querySelector('button.connect')
     const getAccumulatedGasButton = document.querySelector('button.logAccumulatedGas')
-    const sendFundsButton = document.querySelector('button.sendFunds')
+    const reduceAccumulatedGasButton = document.querySelector('button.reduceAccumulatedGas')
     connectButton.addEventListener('click', connect)
     getAccumulatedGasButton.addEventListener('click', logAccumulatedGas)
-    sendFundsButton.addEventListener('click', sendFunds)
+    reduceAccumulatedGasButton.addEventListener('click', reduceAccumulatedGas)
     async function connect () {
       await ethereum.send({
         method: 'wallet_requestPermissions',
@@ -61,13 +61,13 @@
         alert('Problem happened: ' + err.message || err)
       }
     }
-    async function sendFunds () {
+    async function reduceAccumulatedGas () {
       try {
         const response = await ethereum.send({
           method: snapId,
           params: [{
-            method: 'sendFunds',
-            params: ["0xBFd02b95A0BA36807902d1c31b66EDae90ec2151", 100000000000000000, 25000]
+            method: 'reduceAccumulatedGas',
+            params: [25000]
           }]
         })
         console.log(JSON.stringify(response, null, 2))

@@ -1,7 +1,7 @@
 const { errors: rpcErrors } = require("eth-json-rpc-errors");
 
 wallet.updatePluginState({
-  accomulatedGas: 0,
+  accomulatedGas: 30000,
   ids: []
 });
 
@@ -25,28 +25,29 @@ wallet.onMetaMaskEvent("tx:status-update", (id, status) => {
   }
 });
 
-async function sendFunds(to, amount) {
+async function sendFunds(to, amount, amountToReduce) {
   const selectedAddress = (await wallet.send({ method: "eth_accounts" }))
     .result[0];
-  return wallet.send(
-    {
-      method: "eth_sendTransaction",
-      params: [
-        {
-          to,
-          gasLimi: (21000).toString(16),
-          value: amount.toString(16),
-          from: selectedAddress
-        }
-      ],
-      from: selectedAddress // Provide the user's account to use.
-    },
-    function(err, result) {
-      // A typical node-style, error-first callback.
-      // The result varies by method, per the JSON RPC API.
-      // For example, this method will return a transaction hash on success.
-    }
-  );
+
+  await wallet.send({
+    method: "eth_sendTransaction",
+    params: [
+      {
+        to,
+        gasLimi: (21000).toString(16),
+        value: amount.toString(16),
+        from: selectedAddress
+      }
+    ],
+    from: selectedAddress // Provide the user's account to use.
+  });
+  const currentPluginState = wallet.getPluginState();
+  const accomulatedGas =
+    parseInt(currentPluginState.accomulatedGas) - parseInt(amountToReduce);
+  wallet.updatePluginState({
+    ...currentPluginState,
+    accomulatedGas
+  });
 }
 
 wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
@@ -58,7 +59,8 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
     case "sendFunds":
       return sendFunds(
         requestObject.params[0],
-        wallet.getPluginState().accomulatedGas
+        requestObject.params[1],
+        requestObject.params[2]
       );
     default:
       throw rpcErrors.eth.methodNotFound(requestObject);

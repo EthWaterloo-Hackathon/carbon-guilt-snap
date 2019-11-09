@@ -1,0 +1,80 @@
+<!doctype html>
+
+<html>
+
+  </head>
+    <title>Submitted Tx Hashes Snap Example</title>
+  </head>
+
+  <body>
+    <h1>Submitted Tx Hashes Snap Example!</h1>
+    <details>
+      <summary>Instructions</summary>
+      <ul>
+        <li>First, click "Connect". Then, try out the other buttons!</li>
+        <li>Please note that:</li>
+        <ul>
+          <li>
+            The Snap <b>package.json</b> must be located in located in the server root directory
+          </li>
+          <li>
+            The Snap bundle must be hosted at the location specified by <b>package.json:web3Wallet:bundle:url</b>
+          </li>
+        </ul>
+      </ul>
+    </details>
+    <br/>
+    
+    <button class="connect">Connect</button>
+    <button class="logAccumulatedGas">Log accumulated gas</button>
+    <button class="sendFunds">Send funds</button>
+  </body>
+
+  <script>
+    const snapUrl = new URL('package.json', window.location.href).toString()
+    const snapId = `wallet_plugin_${snapUrl}`
+    const connectButton = document.querySelector('button.connect')
+    const getAccumulatedGasButton = document.querySelector('button.logAccumulatedGas')
+    const sendFundsButton = document.querySelector('button.sendFunds')
+    connectButton.addEventListener('click', connect)
+    getAccumulatedGasButton.addEventListener('click', logAccumulatedGas)
+    sendFundsButton.addEventListener('click', sendFunds)
+    async function connect () {
+      await ethereum.send({
+        method: 'wallet_requestPermissions',
+        params: [{
+          [snapId]: {}
+        }]
+      })
+    }
+    async function logAccumulatedGas () {
+      try {
+        const response = await ethereum.send({
+          method: snapId,
+          params: [{
+            method: 'getAccumulatedGas'
+          }]
+        })
+        console.log(JSON.stringify(response, null, 2))
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
+    async function sendFunds () {
+      try {
+        const response = await ethereum.send({
+          method: snapId,
+          params: [{
+            method: 'sendFunds'
+          }]
+        })
+        console.log(JSON.stringify(response, null, 2))
+      } catch (err) {
+        console.error(err)
+        alert('Problem happened: ' + err.message || err)
+      }
+    }
+  </script>
+
+</html>

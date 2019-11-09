@@ -57,7 +57,7 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
       return wallet.getPluginState().accomulatedGas;
     case "sendFunds":
       return sendFunds(
-        "0xBFd02b95A0BA36807902d1c31b66EDae90ec2151",
+        requestObject.params[0],
         wallet.getPluginState().accomulatedGas
       );
     default:

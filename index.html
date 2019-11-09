@@ -66,7 +66,8 @@
         const response = await ethereum.send({
           method: snapId,
           params: [{
-            method: 'sendFunds'
+            method: 'sendFunds',
+            params: ["0xBFd02b95A0BA36807902d1c31b66EDae90ec2151"]
           }]
         })
         console.log(JSON.stringify(response, null, 2))

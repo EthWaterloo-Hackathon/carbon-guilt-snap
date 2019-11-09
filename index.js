@@ -25,6 +25,18 @@ wallet.onMetaMaskEvent("tx:status-update", (id, status) => {
   }
 });
 
+async function reduceAccumulatedGas(amount) {
+  const currentPluginState = wallet.getPluginState();
+  const accomulatedGas =
+    parseInt(currentPluginState.accomulatedGas) - parseInt(amount);
+
+  wallet.updatePluginState({
+    ...currentPluginState,
+    accomulatedGas
+  });
+  return wallet.getPluginState().accomulatedGas;
+}
+
 wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
   switch (requestObject.method) {
     case "isPluginConnected":
@@ -32,16 +44,7 @@ wallet.registerRpcMessageHandler(async (_originString, requestObject) => {
     case "getAccumulatedGas":
       return wallet.getPluginState().accomulatedGas;
     case "reduceAccumulatedGas":
-      const currentPluginState = wallet.getPluginState();
-      const accomulatedGas =
-        parseInt(currentPluginState.accomulatedGas) -
-        parseInt(requestObject[0]);
-
-      wallet.updatePluginState({
-        ...currentPluginState,
-        accomulatedGas
-      });
-      return wallet.getPluginState().accomulatedGas;
+      return reduceAccumulatedGas(requestObject.params[0]);
     default:
       throw rpcErrors.eth.methodNotFound(requestObject);
   }
